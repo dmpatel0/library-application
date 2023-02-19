@@ -1,5 +1,10 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Library {
 
@@ -104,6 +109,85 @@ public class Library {
         });
 
         return booksByGenre;
+    }
+
+    /**
+     * @brief Will display the current genres kept in the library, and the quantity of each
+     *
+     */
+    public void displayContents() {
+
+        if(this.bookCount == 1) {
+            System.out.println("There is currently 1 book in the library:");
+        } else {
+            System.out.println("There are currently " + this.bookCount + " books in the library:");
+        }
+
+        for(int i = 0; i < 5; i++) {
+            int genreAmount = this.genres[i];
+            if(genreAmount > 0) {
+                String genre = switch (i) {
+                    case 0 -> "Non-fiction";
+                    case 1 -> "Drama";
+                    case 2 -> "Romance";
+                    case 3 -> "Mystery";
+                    case 4 -> "Fiction";
+                    default -> "Unknown";
+                };
+
+                if(genreAmount == 1) {
+                    System.out.println("There is " + genreAmount + " book of the " + genre + " genre.");
+                } else {
+                    System.out.println("There are " + genreAmount + " books of the " + genre + " genre.");
+                }
+            }
+        }
+    }
+
+    /**
+     * @brief Reads the given file and adds books to the library with the correct information
+     *
+     * @param filePath The location of the file to be read
+     */
+    public void readFile(String filePath) throws FileNotFoundException {
+        File readFile = new File(filePath);
+        Scanner s = new Scanner(readFile);
+
+        while(s.hasNextLine()) {
+            String nextBook = s.nextLine();
+            String[] stringArray = nextBook.split(":");
+
+            String title = stringArray[0];
+            String author = stringArray[1];
+            String genre = stringArray[2];
+            long ISBN = Long.parseLong(stringArray[3]);
+            int pages = Integer.parseInt(stringArray[4]);
+
+            this.addBook(title, author, genre, ISBN, pages);
+        }
+    }
+
+    /**
+     * @brief Writes the current library into the file that stores the data
+     */
+    public void writeFile(String filePath) throws IOException {
+        try {
+
+            FileWriter w = new FileWriter(filePath, false);
+            this.collection.forEach((k, v) -> {
+                String writeLine = v.title + ":" + v.author + ":" + v.genre + ":" + String.valueOf(v.getISBN()) + ":" + String.valueOf(v.getPages()) + "\n";
+                try {
+                    w.write(writeLine);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            w.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
