@@ -1,9 +1,22 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 public class Main {
+
+    static Library library = new Library();
     public static void main(String[] args) throws IOException {
+
+        JFrame frame = new JFrame("Library Application");
+        frame.setContentPane(new GUI().panelMain);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+        frame.setSize(500,500);
 
         Scanner s = new Scanner(System.in);
 
@@ -12,7 +25,7 @@ public class Main {
         System.out.println("Welcome to your personal library!");
         System.out.println();
 
-        Library library = new Library();
+
         String filePath = "./src/libFile.txt";
 
         try {
@@ -76,5 +89,11 @@ public class Main {
         }
 
         System.out.println("*** End of program ***");
+    }
+
+    public static void displayContents() {
+        System.out.println();
+        library.displayContents();
+        System.out.println();
     }
 }
